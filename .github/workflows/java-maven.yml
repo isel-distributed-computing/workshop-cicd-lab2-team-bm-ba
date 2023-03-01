@@ -25,7 +25,7 @@ jobs:
     - name: Build Auth Service with Maven
       run: |
         cd authusers
-        mvn -B package -DJWT_SECRET="$JWT_SECRET"
+        mvn -B package
   
   build-notifications:
     strategy:
@@ -47,7 +47,7 @@ jobs:
     - name: Build Notification with Maven
       run: |
         cd notifications
-        mvn -B package -DJWT_SECRET="$JWT_SECRET"
+        mvn -B package
       
   build-todolist:
     strategy:
@@ -69,4 +69,4 @@ jobs:
     - name: Build TodoList with Maven
       run: |
         cd todolist
-        mvn -B package -DJWT_SECRET="$JWT_SECRET"
+        mvn -B package
