@@ -16,7 +16,7 @@ jobs:
     - name: Set up JDK ${{ matrix.jdk }}
       uses: actions/setup-java@v3
       env:
-        SUPER_SECRET: ${{ JWT_SECRET }}
+        SUPER_SECRET: ${{ secrets.JWT_SECRET }}
       with:
         java-version: ${{ matrix.jdk }}
         distribution: 'temurin'
@@ -38,7 +38,7 @@ jobs:
     - name: Set up JDK ${{ matrix.jdk }}
       uses: actions/setup-java@v3
       env:
-        SUPER_SECRET: ${{ JWT_SECRET }}
+        SUPER_SECRET: ${{ secrets.JWT_SECRET }}
       with:
         java-version: ${{ matrix.jdk }}
         distribution: 'temurin'
@@ -60,7 +60,7 @@ jobs:
     - name: Set up JDK ${{ matrix.jdk }}
       uses: actions/setup-java@v3
       env:
-        SUPER_SECRET: ${{ JWT_SECRET }}
+        SUPER_SECRET: ${{ secrets.JWT_SECRET }}
       with:
         java-version: ${{ matrix.jdk }}
         distribution: 'temurin'
