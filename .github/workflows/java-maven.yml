@@ -7,6 +7,10 @@ on:
 jobs:
   build-auth-service:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jdk: [17]
+        os: [ubuntu-18.04, ubuntu-22.04]
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -23,6 +27,10 @@ jobs:
   
   build-notifications:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jdk: [17]
+        os: [ubuntu-18.04, ubuntu-22.04]
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -39,6 +47,10 @@ jobs:
       
   build-todolist:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jdk: [17]
+        os: [ubuntu-18.04, ubuntu-22.04]
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
