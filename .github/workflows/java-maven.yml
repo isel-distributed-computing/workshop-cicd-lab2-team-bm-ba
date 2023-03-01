@@ -16,7 +16,7 @@ jobs:
     - name: Set up JDK ${{ matrix.jdk }}
       uses: actions/setup-java@v3
       env:
-        SUPER_SECRET: ${{ secrets.JWT_SECRET }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
       with:
         java-version: ${{ matrix.jdk }}
         distribution: 'temurin'
@@ -25,7 +25,7 @@ jobs:
     - name: Build Auth Service with Maven
       run: |
         cd authusers
-        mvn -B package -DJWT_SECRET="$SUPER_SECRET"
+        mvn -B package -DJWT_SECRET="$JWT_SECRET"
   
   build-notifications:
     strategy:
@@ -38,7 +38,7 @@ jobs:
     - name: Set up JDK ${{ matrix.jdk }}
       uses: actions/setup-java@v3
       env:
-        SUPER_SECRET: ${{ secrets.JWT_SECRET }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
       with:
         java-version: ${{ matrix.jdk }}
         distribution: 'temurin'
@@ -47,7 +47,7 @@ jobs:
     - name: Build Notification with Maven
       run: |
         cd notifications
-        mvn -B package -DJWT_SECRET="$SUPER_SECRET"
+        mvn -B package -DJWT_SECRET="$JWT_SECRET"
       
   build-todolist:
     strategy:
@@ -60,7 +60,7 @@ jobs:
     - name: Set up JDK ${{ matrix.jdk }}
       uses: actions/setup-java@v3
       env:
-        SUPER_SECRET: ${{ secrets.JWT_SECRET }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
       with:
         java-version: ${{ matrix.jdk }}
         distribution: 'temurin'
@@ -69,4 +69,4 @@ jobs:
     - name: Build TodoList with Maven
       run: |
         cd todolist
-        mvn -B package -DJWT_SECRET="$SUPER_SECRET"
+        mvn -B package -DJWT_SECRET="$JWT_SECRET"
