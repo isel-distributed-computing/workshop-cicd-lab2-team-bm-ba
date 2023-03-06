@@ -42,7 +42,6 @@ services:
     image: authuser
     restart: always
     container_name: authuser-cicd
-
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/swagger-ui/index.html" ]
       interval: 10s
@@ -66,7 +65,7 @@ services:
       rabbit-cicd:
           condition: service_started
       authuser-cicd:
-        condition: service_started
+        condition: service_healthy
     restart: always
     container_name: todolist_cicd
     ports:
@@ -81,3 +80,23 @@ services:
       RMQ_PASS: guest
       RMQ_PORT: 5672
       AUTH_SERVICE_URL: http://authuser-cicd:8080/
+
+  postman:
+    image: postman/newman:alpine
+    container_name: postmanTests
+    command:
+      run CI-CD-MICROSERVICES.postman_collection.json -k
+      -r cli,json,junit
+      --reporter-json-export="reports/CI-CD-MICROSERVICES-tests.json"
+      --reporter-junit-export="reports/CI-CD-MICROSERVICES-tests.xml"
+    volumes:
+      - ./tests:/etc/newman
+    depends_on:
+      authuser-cicd:
+        condition: service_started
+      todolist_cicd:
+        condition: service_started
+      notification-cicd:
+        condition : service_started
+      rabbit-cicd:
+        condition: service_started
