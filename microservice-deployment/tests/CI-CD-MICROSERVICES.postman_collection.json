@@ -33,11 +33,11 @@
 					}
 				},
 				"url": {
-					"raw": "authuser-cicd:8081/user/register",
+					"raw": "authuser-cicd:8080/user/register",
 					"host": [
 						"authuser-cicd"
 					],
-					"port": "8081",
+					"port": "8080",
 					"path": [
 						"user",
 						"register"
@@ -91,11 +91,11 @@
 					}
 				},
 				"url": {
-					"raw": "authuser-cicd:8081/user/login",
+					"raw": "authuser-cicd:8080/user/login",
 					"host": [
 						"authuser-cicd"
 					],
-					"port": "8081",
+					"port": "8080",
 					"path": [
 						"user",
 						"login"
@@ -138,11 +138,11 @@
 					}
 				},
 				"url": {
-					"raw": "todolist_cicd:8082/todolist",
+					"raw": "todolist_cicd:8080/todolist",
 					"host": [
 						"todolist_cicd"
 					],
-					"port": "8082",
+					"port": "8080",
 					"path": [
 						"todolist"
 					]
@@ -179,11 +179,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "todolist_cicd:8082/todolist/teste",
+					"raw": "todolist_cicd:8080/todolist/teste",
 					"host": [
 						"todolist_cicd"
 					],
-					"port": "8082",
+					"port": "8080",
 					"path": [
 						"todolist",
 						"teste"
