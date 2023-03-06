@@ -1,0 +1,38 @@
+name: Hello World
+on: 
+  workflow_dispatch:
+  schedule:
+    - cron:  '*/10 * * * *'
+
+jobs:
+  # the id of the name
+  hello-world-job:
+    # The type of runner that the job will run on
+    runs-on: [self-hosted]
+    # Sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out the repository
+    - uses: actions/checkout@v3
+    # Runs a single command using the runner shell
+    - name: Run a one-line script
+      run: echo "Hello World"
+      
+  test:
+    needs: hello-world-job
+    # The type of runner that the job will run on
+    runs-on: [self-hosted]
+    # Sequence of tasks that will be executed as part of the job
+    steps:
+    # Runs a single command using the runner shell
+    - name: Run a one-line script
+      run: echo "Test"
+      
+  build:
+    needs: hello-world-job
+    # The type of runner that the job will run on
+    runs-on: [self-hosted]
+    # Sequence of tasks that will be executed as part of the job
+    steps:
+    # Runs a single command using the runner shell
+    - name: Run a one-line script
+      run: echo "Build"
