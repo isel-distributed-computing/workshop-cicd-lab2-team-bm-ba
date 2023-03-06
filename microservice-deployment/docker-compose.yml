@@ -7,26 +7,28 @@ services:
     volumes: #Mount directory for SQL scrits bootstra
       - "./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
     healthcheck: #checks if db is operating normally, i.e. accepting connections
-       test: ["CMD-SHELL", "pg_isready -U postgres"]
-       interval: 5s
-       timeout: 5s
-       retries: 5
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     environment:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_USER: ${DATABASE_USERNAME}   
+      POSTGRES_USER: ${DATABASE_USERNAME}
   rabbit-cicd: #Message Broker service
     image: rabbitmq:3-management
     restart: always
     container_name: rabbit-cicd
     ports: #Only expose the necessary ports. THis sone is needed to access the administration console
-    - "127.0.0.1:15672:15672"
+      - "127.0.0.1:15672:15672"
   notification-cicd: #notifications service
     image: notifications
     restart: always
     container_name: notification-cicd
     depends_on: #Express dependency between services. notification-cicd will only starts when these are "ready" 
-      - postgres-cicd
-      - rabbit-cicd
+      postgres-cicd:
+        condition: service_healthy
+      rabbit-cicd:
+          condition: service_started
     environment:
       DATABASE_URL: jdbc:postgresql://postgres-cicd:5432/notification
       DATABASE_USERNAME: ${DATABASE_USERNAME}
@@ -40,10 +42,17 @@ services:
     image: authuser
     restart: always
     container_name: authuser-cicd
+
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/swagger-ui/index.html" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
     ports:
       - 127.0.0.1:8081:8080
     depends_on:
-      - postgres-cicd
+      postgres-cicd:
+        condition: service_healthy
     environment:
       DATABASE_URL: jdbc:postgresql://postgres-cicd:5432/users
       DATABASE_USERNAME: ${DATABASE_USERNAME}
@@ -52,9 +61,12 @@ services:
   todolist_cicd: #todo service
     image: todolist
     depends_on:
-      - postgres-cicd
-      - rabbit-cicd
-      - authuser-cicd
+      postgres-cicd:
+        condition: service_healthy
+      rabbit-cicd:
+          condition: service_started
+      authuser-cicd:
+        condition: service_healthy
     restart: always
     container_name: todolist_cicd
     ports:
