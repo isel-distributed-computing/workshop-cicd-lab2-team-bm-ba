@@ -1,0 +1,77 @@
+name: Build Scan Publish
+on:
+  workflow_dispatch:
+
+env:
+    REGISTRY: registry.solvit.pt/formacao-solvit6
+
+jobs:
+  build-scan-authuser:
+    name: Build and scan Authuser service
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Setup Java 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        cache: maven
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: 'java'
+    # Build Java package
+    - name: build auth phase-2
+      run: |
+        cd authusers
+        mvn -B package -Dmaven.test.skip=true
+    # Perform analysis
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+
+    # Upload artifacts for next job
+    - uses: actions/upload-artifact@v3
+      with:
+        name: authuser-jar
+        path: authusers/target/authuser-phase2-1.0.0.jar
+        if-no-files-found: error
+        
+  publish-docker-auth:
+    needs: build-scan-authuser
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: authuser-jar
+      - name: Copy JAR to target (to match Dockerfile)
+        run: |
+          mkdir authusers/target
+          cp authuser-phase2-1.0.0.jar authusers/target/
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USER_NAME }}
+          password: ${{ secrets.REGISTRY_USER_PWD }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/authuser
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: authusers/.
+          file: authusers/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
